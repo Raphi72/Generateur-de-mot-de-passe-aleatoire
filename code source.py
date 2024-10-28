@@ -90,24 +90,28 @@ def get_entry_recherche():
 
 def recherche_nom():
     global result_label, contenu_recherche
-    charge("Données.txt")
-    get_entry_recherche()
-    
-    if result_label:
+    charge("Données.txt")  
+    get_entry_recherche()   
+    if result_label is not None:
         result_label.destroy()
-        
-    # Vérification et affichage du résultat
     mot_de_passe = lit(contenu_recherche)
     if mot_de_passe is None:
         result_label = Label(recherche_frame, text="Ce nom n'a pas été enregistré", font=("Arial", 20), bg="#4065A4", fg="white")
+        result_label.pack()  
+        window.after(3500, lambda: result_label.destroy())  
     else:
-        result_label = Label(recherche_frame, text=f"Mot de passe : {mot_de_passe}", font=("Arial", 20), bg="#4065A4", fg="white")
-    
-    result_label.pack(pady=10)
-    window.after(3500, result_label.destroy)  # Disparition automatique après 3,5 secondes
+        result.insert(0, mot_de_passe)  
+        window.after(3500, lambda: result.delete(0, END))  
+
+def copier_contenu():
+    contenu = result.get()  # Récupère le contenu de result
+    window.clipboard_clear()  # Efface le presse-papiers
+    window.clipboard_append(contenu)  # Ajoute le contenu au presse-papiers
+    window.update() 
+
 
 def ouvrir_recherche():
-    global Search, recherche_frame, result_label
+    global Search, recherche_frame, result_label, result
     
     # Création de la fenêtre secondaire pour la recherche
     recherche = Toplevel(window)
@@ -127,6 +131,14 @@ def ouvrir_recherche():
     
     # Bouton de recherche
     Button(recherche_frame, text="Rechercher", font=("Arial", 20), bg="white", fg="black", command=recherche_nom).pack(pady=10)
+    
+    result_frame = Frame(recherche_frame, bg="#4065A4")
+    result_frame.pack(pady=10)
+    
+    result = Entry(recherche_frame, font=("Arial", 20), bg=("#4065A4"), fg=("white"))
+    result.pack()
+    
+    Button(result_frame, text="Copier", font=("Arial", 15), bg="green", fg="black", command=copier_contenu).pack(side="left", padx=10)
     
     # Placeholder pour le label de résultat
     result_label = None  # Sera défini lors de la recherche
