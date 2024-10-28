@@ -3,6 +3,7 @@ import string
 from random import randint, choice
 import os 
 
+
 SEP = ";"    
 EOL = "\n"   
 
@@ -18,8 +19,9 @@ def charge(nom_du_fichier):
         with open(nom_du_fichier, 'r') as fichier:
             scores = fichier.readlines()
             for line in scores:
-                t = line.strip().split(SEP)  # Enlève les espaces et les retours à la ligne
-                d[t[0]] = t[1]  # Stocke le mot de passe comme une chaîne
+                t = line.strip().split(SEP)  
+                if len(t) == 2:  
+                    d[t[0]] = t[1]  
         return True
     else:
         return False
